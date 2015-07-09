@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -86,7 +87,12 @@ public class PhoenixInputFormat<T extends DBWritable> extends InputFormat<NullWr
         Preconditions.checkNotNull(splits);
         final List<InputSplit> psplits = Lists.newArrayListWithExpectedSize(splits.size());
         for (List<Scan> scans : qplan.getScans()) {
-            psplits.add(new PhoenixInputSplit(scans));
+            for (Scan scan : scans) {
+                List<Scan> list = new ArrayList<Scan>(1);
+                list.add(scan);
+                psplits.add(new PhoenixInputSplit(list));
+            }
+
         }
         return psplits;
     }

@@ -20,6 +20,7 @@ package org.apache.phoenix.spark
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.types.UTF8String
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.sql.sources._
 import org.apache.commons.lang.StringEscapeUtils.escapeSql
@@ -92,6 +93,7 @@ case class PhoenixRelation(tableName: String, zkUrl: String)(@transient val sqlC
   // Helper function to escape string values in SQL queries
   private def compileValue(value: Any): Any = value match {
     case stringValue: String => s"'${escapeSql(stringValue)}'"
+    case stringValue: UTF8String => s"'${escapeSql(stringValue.toString)}'"
     case _ => value
   }
 }
